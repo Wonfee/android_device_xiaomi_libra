@@ -50,14 +50,24 @@ on init
     mkdir /storage/usbotg 0700 root root
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
+    export SECONDARY_STORAGE /storage/usbotg
     export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
     export EMULATED_STORAGE_TARGET /storage/emulated
+
+    #support USB OTG
+    mkdir /mnt/media_rw/usbotg 0700 media_rw media_rw
+    mkdir /storage/usbotg 0000 system system
 
     # Support legacy paths
     symlink /storage/emulated/legacy /sdcard
     symlink /storage/emulated/legacy /mnt/sdcard
     symlink /storage/emulated/legacy /storage/sdcard0
     symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+
+    symlink /mnt/shell/emulated/0 /storage/emulated/0
+    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+    symlink /storage/usbotg /mnt/usb_storage
+    symlink /storage/usbotg /usb_storage
 
 on early-boot
     start wakeup-symlink
