@@ -30,15 +30,19 @@ TARGET_CPU_SMP := true
 # Graphics
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 TARGET_USES_ION := true
-#TARGET_USES_NEW_ION_API :=true
+TARGET_USES_NEW_ION_API :=true
 TARGET_USES_OVERLAY := true
+
 USE_OPENGL_RENDERER := true
+BOARD_USE_LEGACY_UI := true
 
 MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
 
 HAVE_ADRENO_SOURCE:= false
 OVERRIDE_RS_DRIVER:= libRSDriver_adreno.so
+
+TARGET_USES_C2D_COMPOSITION := true
 
 # Fonts
 EXTENDED_FONT_FOOTPRINT := true
@@ -85,27 +89,32 @@ USE_OPENGL_RENDERER := true
 BOARD_USE_LEGACY_UI := true
 
 #Kernel
-BOARD_CUSTOM_BOOTIMG_MK := device/xiaomi/libra/mkbootimg.mk
-#TARGET_KERNEL_SOURCE := kernel/xiaomi/libra
-#TARGET_KERNEL_CONFIG := msm8994-perf_defconfig
+#BOARD_CUSTOM_BOOTIMG_MK := device/xiaomi/libra/mkbootimg.mk
+TARGET_KERNEL_SOURCE := kernel/xiaomi/libra
+TARGET_KERNEL_CONFIG := libra_user_defconfig
 BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M
-BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_PAGESIZE := 4096
-BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x0000000 --ramdisk_offset 0x02000000 --tags_offset 0x00000100 --dt device/xiaomi/libra/dt.img
-
-#TARGET_PREBUILT_KERNEL := device/xiaomi/libra/kernel
 BOARD_KERNEL_SEPARATED_DT := true
-BOARD_HAS_NO_SELECT_BUTTON := true
-
-#BOARD_KERNEL_BASE        := 0x00000000
-#BOARD_KERNEL_PAGESIZE    := 4096
-#BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
-#BOARD_RAMDISK_OFFSET     := 0x02000000
-
+BOARD_KERNEL_BASE        := 0x00000000
+BOARD_KERNEL_PAGESIZE    := 4096
+BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
+BOARD_RAMDISK_OFFSET     := 0x02000000
+TARGETE_USES_UNCOMPRESSED_KERNEL := false
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 TARGET_USES_UNCOMPRESSED_KERNEL := true
+BOARD_DTBTOOL_ARGS := -2
+BOARD_KERNEL_IMAGE_NAME := Image
+
+WLAN_MODULES:
+	mkdir -p $(KERNEL_MODULES_OUT)/qca_cld
+	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/qca_cld/qca_cld_wlan.ko
+	ln -sf /system/lib/modules/qca_cld/qca_cld_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
+
+TARGET_KERNEL_MODULES += WLAN_MODULES
+
+# Lights
+TARGET_PROVIDES_LIBLIGHT := true
 
 # fix this up by examining /proc/mtd on a running device
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864 #64M
@@ -158,7 +167,8 @@ BOARD_USES_QC_TIME_SERVICES := true
 MALLOC_IMPL := dlmalloc
 
 # CMHW
-BOARD_HARDWARE_CLASS := device/xiaomi/libra/cmhw
+BOARD_HARDWARE_CLASS := device/xiaomi/libra/cmhw \
+     hardware/cyanogen/cmhw
 
 # Ril
 TARGET_RIL_VARIANT := caf
@@ -209,17 +219,17 @@ TW_EXTERNAL_STORAGE_PATH := "/usb-otg"
 TW_EXTERNAL_STORAGE_MOUNT_POINT := "usb-otg"
 
 # Enable dex pre-opt to speed up initial boot
-ifneq ($(TARGET_USES_AOSP),true)
-  ifeq ($(HOST_OS),linux)
-    ifeq ($(WITH_DEXPREOPT),)
-      WITH_DEXPREOPT := true
-      ifneq ($(TARGET_BUILD_VARIANT),user)
-        # Retain classes.dex in APK's for non-user builds
-        DEX_PREOPT_DEFAULT := nostripping
-      endif
-    endif
-  endif
-endif
+#ifneq ($(TARGET_USES_AOSP),true)
+#  ifeq ($(HOST_OS),linux)
+#    ifeq ($(WITH_DEXPREOPT),)
+#      WITH_DEXPREOPT := true
+#      ifneq ($(TARGET_BUILD_VARIANT),user)
+#        # Retain classes.dex in APK's for non-user builds
+#        DEX_PREOPT_DEFAULT := nostripping
+#      endif
+#    endif
+#  endif
+#endif
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
