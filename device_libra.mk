@@ -10,14 +10,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
-PRODUCT_COPY_FILES += \
-    device/xiaomi/libra/kernel:kernel
-
 #chargeonlymode
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/sbin/chargeonlymode:root/sbin/chargeonlymode \
-    $(LOCAL_PATH)/rootdir/etc/sbin/qcrypto_module.ko:root/sbin/qcrypto_module.ko \
-    $(LOCAL_PATH)/rootdir/etc/sbin/qdrbg_module.ko:root/sbin/qdrbg_module.ko
+    $(LOCAL_PATH)/rootdir/etc/sbin/chargeonlymode:root/sbin/chargeonlymode
 
 #media
 PRODUCT_COPY_FILES += \
@@ -86,10 +81,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/data/netmgr_config.xml:system/etc/data/netmgr_config.xml \
     $(LOCAL_PATH)/data/qmi_config.xml:system/etc/data/qmi_config.xml 
 
-#wake_gesture
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wakegesture.sh:system/bin/wakegesture.sh
-
 #gps
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/gps/gps.conf:system/etc/gps.conf
@@ -143,10 +134,6 @@ PRODUCT_COPY_FILES += \
 #FEATURE_OPENGLES_EXTENSION_PACK support string config file
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.opengles.aep.xml:system/etc/permissions/android.hardware.opengles.aep.xml
-
-# wcnss
-PRODUCT_COPY_FILES += \
-    device/xiaomi/libra/wcnss_service:system/bin/wcnss_service
 
 #ANT+ stack
 PRODUCT_PACKAGES += \
@@ -284,7 +271,6 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf \
     wpa_supplicant \
     libwpa_client \
-    libwcnss_qmi \
     libQWiFiSoftApCfg \
     libqsap_sdk \
     wpa_supplicant_overlay.conf \
@@ -292,11 +278,6 @@ PRODUCT_PACKAGES += \
     hostapd \
     hostapd_cli \
     dhcpcd.conf
-
-#FINGERPRINT
-PRODUCT_BUILD_PROP_OVERRIDES += \
-    BUILD_FINGERPRINT=Xiaomi/libra/libra:5.1.1/LMY47V/5.12.10:user/release-keys \
-    PRIVATE_BUILD_DESC="libra-user 5.1.1 LMY47V 5.12.10 release-keys"
 
 # set default USB configuration
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
